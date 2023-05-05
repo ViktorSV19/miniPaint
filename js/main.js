@@ -4,44 +4,37 @@ const ctx = canvas.getContext(`2d`);
 const canvasWidth = canvas.clientWidth;
 const canvasHeight = canvas.clientHeight;
 
-// const startPos = [canvasWidth / 2, canvasHeight / 2];
-let figure = [[0, 0], [100, 100], [50, 100], [100, 200], [200, 100]];
-
-// canvas.addEventListener(`click`, (e) => {
-//     if (figure.length === 0) {
-//         let startPos = [e.x, e.y];
-//         figure.push(startPos);
-//     }
-//     figure.push([e.x, e.y]);
-//     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-//     drawFigure(figure);
-// });
-
-// canvas.addEventListener(`click`, (e) => {
-//     if (figure.length === 0) {
-//         let startPos = [e.x, e.y];
-//         figure.push(startPos);
-//     }
-//     figure.push([e.x, e.y]);
-//     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-//     drawFigure(figure);
-// });
+let figure = [];
 
 canvas.addEventListener(`mousemove`, (e) => {
-    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-    drawFigure(figure);
-    let x = e.offsetX;
-    let y = e.offsetY;
-    let startPos = [figure[lastIndex(figure)][0], figure[lastIndex(figure)][1]];
-    ctx.beginPath();
-    ctx.moveTo(startPos[0], startPos[1]);
-    ctx.lineTo(x, y);
-    ctx.stroke();
-    canvas.onclick = function () {
+    const x = e.offsetX;
+    const y = e.offsetY;
+    let startPos;
+
+    if (figure.length >= 2) {
+        startPos = [figure[lastIndex(figure)][0], figure[lastIndex(figure)][1]];
         ctx.clearRect(0, 0, canvasWidth, canvasHeight);
         drawFigure(figure);
-        figure.push([x, y]);
+        ctx.beginPath();
+        ctx.moveTo(startPos[0], startPos[1]);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+    } else if (figure.length === 1) {
         startPos = [figure[lastIndex(figure)][0], figure[lastIndex(figure)][1]];
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.beginPath();
+        ctx.moveTo(startPos[0], startPos[1]);
+        ctx.lineTo(x, y);
+        ctx.stroke();
+    }
+
+    canvas.onclick = function () {
+        figure.push([x, y]);
+        if (figure.length >= 2) {
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+            drawFigure(figure);
+            startPos = [figure[lastIndex(figure)][0], figure[lastIndex(figure)][1]];
+        }
     };
 });
 
@@ -63,7 +56,6 @@ function drawFigure(figure) {
         ctx.stroke();
         oldX = newX;
         oldY = newY;
-        // console.log(`oldX: ${oldX}, oldY: ${oldY}, newX: ${newX}, newY: ${newY}`);
         if (figureNumber === figure.length)
             return;
         newX = figure[figureNumber][coordinate];
@@ -73,16 +65,3 @@ function drawFigure(figure) {
         figureNumber++;
     }
 }
-// canvas.addEventListener(`mousemove`, (e) => {
-//     ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-//     let X = e.offsetX;
-//     let Y = e.offsetY;
-//     ctx.beginPath();
-//     ctx.moveTo(startPos[0], startPos[1]);
-//     ctx.lineTo(X, Y);
-//     ctx.stroke();
-    // canvas.onclick = function () {
-    //     figure.push([X, Y]);
-    //     console.log(figure);
-    // };
-// });
